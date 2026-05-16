@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_splash_gradient">
+
+    <TextView
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="-24dp"
+        android:background="@drawable/bg_splash_glow"/>
+
+    <TextView
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="-44dp"
+        android:layout_marginBottom="110dp"
+        android:background="@drawable/bg_splash_glow"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="76dp"
+        android:text="+"
+        android:textColor="#55FFFFFF"
+        android:textSize="30sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="142dp"
+        android:layout_marginEnd="40dp"
+        android:text="↗"
+        android:textColor="#66FFFFFF"
+        android:textSize="30sp"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="32dp">
+
+        <TextView
+            android:layout_width="116dp"
+            android:layout_height="116dp"
+            android:background="@drawable/bg_splash_logo"
+            android:elevation="10dp"
+            android:gravity="center"
+            android:text="₹"
+            android:textColor="#16A34A"
+            android:textSize="58sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:text="Expense Tracker"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Track Your Money Smartly"
+            android:textColor="#DCFCE7"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:layout_width="180dp"
+            android:layout_height="6dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/bg_splash_glow"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="34dp"
+        android:gravity="center"
+        android:text="Smart finance starts here"
+        android:textColor="#CCFFFFFF"
+        android:textSize="12sp"/>
+</FrameLayout>
