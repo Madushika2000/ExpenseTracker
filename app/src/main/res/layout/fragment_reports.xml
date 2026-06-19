@@ -41,6 +41,22 @@
                 android:textColor="#1A1A2E"
                 android:layout_marginBottom="16dp"/>
 
+            <Button
+                android:id="@+id/btnEmailMonthlyReport"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_button_primary"
+                android:drawableStart="@android:drawable/ic_dialog_email"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:stateListAnimator="@null"
+                android:text="Email Monthly Report"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

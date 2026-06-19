@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.expensetracker.R;
 import com.example.expensetracker.activities.AddIncomeActivity;
-import com.example.expensetracker.activities.LoginActivity;
+import com.example.expensetracker.activities.MainActivity;
 import com.example.expensetracker.adapters.ExpenseAdapter;
 import com.example.expensetracker.database.DatabaseHelper;
 import com.example.expensetracker.models.Expense;
@@ -28,7 +28,7 @@ public class DashboardFragment extends Fragment {
 
     private DatabaseHelper db;
     private SessionManager session;
-    private TextView tvWelcome, tvTotalMonth, tvExpenseCount, tvRemainingSalary;
+    private TextView tvWelcome, tvDashboardAvatar, tvTotalMonth, tvExpenseCount, tvRemainingSalary;
     private TextView tvIncomeAmount, tvDashboardExpenseAmount;
     private EditText etMonthlySalary;
     private Button btnSaveSalary;
@@ -44,6 +44,7 @@ public class DashboardFragment extends Fragment {
         session = new SessionManager(requireContext());
 
         tvWelcome = view.findViewById(R.id.tvWelcome);
+        tvDashboardAvatar = view.findViewById(R.id.tvDashboardAvatar);
         tvTotalMonth = view.findViewById(R.id.tvTotalMonth);
         tvExpenseCount = view.findViewById(R.id.tvExpenseCount);
         tvRemainingSalary = view.findViewById(R.id.tvRemainingSalary);
@@ -55,7 +56,11 @@ public class DashboardFragment extends Fragment {
         progressExpense = view.findViewById(R.id.progressExpense);
         rvRecent = view.findViewById(R.id.rvRecentExpenses);
 
-        view.findViewById(R.id.btnLogout).setOnClickListener(v -> confirmLogout());
+        tvDashboardAvatar.setOnClickListener(v -> {
+            if (requireActivity() instanceof MainActivity) {
+                ((MainActivity) requireActivity()).openProfile();
+            }
+        });
         view.findViewById(R.id.btnAddIncome).setOnClickListener(v ->
             startActivity(new Intent(requireContext(), AddIncomeActivity.class)));
         btnSaveSalary.setOnClickListener(v -> saveSalary());
@@ -70,7 +75,9 @@ public class DashboardFragment extends Fragment {
         int month = cal.get(Calendar.MONTH) + 1;
         int year = cal.get(Calendar.YEAR);
 
-        tvWelcome.setText("Good Morning, " + session.getUsername());
+        String username = session.getUsername();
+        tvWelcome.setText("Hi, " + username);
+        tvDashboardAvatar.setText(getInitial(username));
 
         double total = db.getTotalExpenseByMonth(userId, month, year);
 
@@ -104,6 +111,13 @@ public class DashboardFragment extends Fragment {
         }
         progressExpense.setProgress(expensePercent);
         progressIncome.setProgress(Math.max(0, 100 - expensePercent));
+    }
+
+    private String getInitial(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return "U";
+        }
+        return username.trim().substring(0, 1).toUpperCase();
     }
 
     private void saveSalary() {
@@ -147,20 +161,4 @@ public class DashboardFragment extends Fragment {
             .show();
     }
 
-    private void confirmLogout() {
-        new AlertDialog.Builder(requireContext())
-            .setTitle("Sign Out")
-            .setMessage("Do you want to sign out of this account?")
-            .setPositiveButton("Sign Out", (dialog, which) -> logout())
-            .setNegativeButton("Cancel", null)
-            .show();
-    }
-
-    private void logout() {
-        session.logout();
-        Intent intent = new Intent(requireContext(), LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        requireActivity().finish();
-    }
 }

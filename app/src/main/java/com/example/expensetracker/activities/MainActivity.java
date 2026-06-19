@@ -13,6 +13,7 @@ import com.example.expensetracker.fragments.ExpensesFragment;
 import com.example.expensetracker.fragments.BudgetFragment;
 import com.example.expensetracker.fragments.ProfileFragment;
 import com.example.expensetracker.fragments.ReportsFragment;
+import com.example.expensetracker.utils.ReportScheduler;
 import com.example.expensetracker.utils.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
+
+        // Make sure the automatic monthly report email is scheduled.
+        ReportScheduler.scheduleMonthlyReport(this);
 
         bottomNav = findViewById(R.id.bottomNav);
         FloatingActionButton fabAdd = findViewById(R.id.fabAdd);
@@ -70,5 +74,9 @@ public class MainActivity extends AppCompatActivity {
             .beginTransaction()
             .replace(R.id.fragmentContainer, fragment)
             .commit();
+    }
+
+    public void openProfile() {
+        bottomNav.setSelectedItemId(R.id.nav_profile);
     }
 }

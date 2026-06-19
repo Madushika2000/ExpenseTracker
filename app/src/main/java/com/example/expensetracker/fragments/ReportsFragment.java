@@ -2,14 +2,21 @@ package com.example.expensetracker.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.*;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.example.expensetracker.R;
 import com.example.expensetracker.database.DatabaseHelper;
 import com.example.expensetracker.models.Category;
 import com.example.expensetracker.models.Expense;
+import com.example.expensetracker.utils.EmailConfig;
+import com.example.expensetracker.utils.EmailSender;
+import com.example.expensetracker.utils.MonthlyReportBuilder;
 import com.example.expensetracker.utils.SessionManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -25,6 +32,8 @@ public class ReportsFragment extends Fragment {
     private PieChart pieChart;
     private BarChart barChart;
     private TextView tvTotalReport;
+    private Button btnEmailMonthlyReport;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,6 +45,8 @@ public class ReportsFragment extends Fragment {
         pieChart = view.findViewById(R.id.pieChart);
         barChart = view.findViewById(R.id.barChart);
         tvTotalReport = view.findViewById(R.id.tvTotalReport);
+        btnEmailMonthlyReport = view.findViewById(R.id.btnEmailMonthlyReport);
+        btnEmailMonthlyReport.setOnClickListener(v -> sendMonthlyReportEmail());
 
         loadReports();
         return view;
@@ -100,5 +111,46 @@ public class ReportsFragment extends Fragment {
         barChart.getDescription().setText("Last 6 Months");
         barChart.animateY(1000);
         barChart.invalidate();
+    }
+
+    private void sendMonthlyReportEmail() {
+        if (!EmailConfig.isConfigured()) {
+            Toast.makeText(requireContext(),
+                "Email not set up yet — add your sender Gmail and App Password in EmailConfig.java",
+                Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        int userId = session.getUserId();
+        Calendar cal = Calendar.getInstance();
+        int month = cal.get(Calendar.MONTH) + 1;
+        int year = cal.get(Calendar.YEAR);
+
+        final MonthlyReportBuilder.Report report =
+            MonthlyReportBuilder.build(requireContext(), userId, month, year);
+        if (report.toEmail == null || report.toEmail.trim().isEmpty()) {
+            Toast.makeText(requireContext(), "No email saved for this user", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Toast.makeText(requireContext(), "Sending report…", Toast.LENGTH_SHORT).show();
+        btnEmailMonthlyReport.setEnabled(false);
+
+        // SMTP is a blocking network call, so do it off the UI thread.
+        new Thread(() -> {
+            String result;
+            try {
+                EmailSender.send(report.toEmail, report.subject, report.body, report.htmlBody);
+                result = "Report sent to " + report.toEmail;
+            } catch (Exception e) {
+                result = "Failed to send: " + e.getMessage();
+            }
+            final String message = result;
+            mainHandler.post(() -> {
+                if (!isAdded()) return; // user may have left the screen
+                btnEmailMonthlyReport.setEnabled(true);
+                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+            });
+        }).start();
     }
 }
